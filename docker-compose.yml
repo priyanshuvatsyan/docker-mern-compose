@@ -1,0 +1,35 @@
+#instead of writing all these commands in frontend and backend folder and cfeating network and adding them we simply use docker compose where we write all the instruction in that file and simply execute that 
+
+services:
+    frontend:
+        build: mern/frontend
+        ports:
+            - "5173:5173"
+        networks: 
+            - mern
+        
+    backend:
+        build: mern/backend
+        ports:
+            - "5050:5050"
+        networks: 
+            - mern
+        depends_on:
+            - mongo # The backend will only start after MongoDB starts
+            
+    mongo:
+        image: mongo:latest # Using MongoDB's official image
+        ports:
+            - "27017:27017"
+        networks:  
+            - mern
+        volumes:  
+            - mongo-data:/data/db # Database data is stored locally
+
+networks:  
+    mern:
+        driver: bridge
+
+volumes:  
+    mongo-data:
+        driver: local # Database data is stored locally
